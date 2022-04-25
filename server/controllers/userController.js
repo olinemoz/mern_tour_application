@@ -4,9 +4,6 @@ const UserModel = require('../models/User');
 
 const signup = async (req, res) => {
     const {email, password, firstName, lastName} = req.body;
-    if (!email || !password || !firstName || !lastName) {
-        return res.status(401).json({message: "Please fill all required fields!"});
-    }
     try {
         const oldUser = await UserModel.findOne({email});
         if (oldUser) {
