@@ -10,3 +10,6 @@ export const signIn = (userData) => {
 export const signUp = (userData) => {
     return API.post("users/signup", userData)
 }
+export const googleSignIn = (result) => {
+    return API.post("users/googleSignIn", result)
+}
