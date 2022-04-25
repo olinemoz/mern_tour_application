@@ -13,6 +13,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import {login} from "../redux/features/authSlice";
+import {GoogleLogin} from "react-google-login"
 
 const Login = () => {
     const [userData, setUserData] = useState({
@@ -42,6 +43,13 @@ const Login = () => {
         if (userData.email && userData.password) {
             dispatch(login({userData, navigate, toast}));
         }
+    }
+
+    const googleSuccess = (response) => {
+        console.log("Google Success Response: ",response);
+    }
+    const googleFailure = (error) => {
+        return toast.error(error);
     }
 
     return (
@@ -89,6 +97,25 @@ const Login = () => {
                             </MDBBtn>
                         </div>
                     </MDBValidation>
+                    <br/>
+                    <GoogleLogin
+                        clientId="614120345433-r7i7v2vg6q4e5fmdsn7itduvjvg84p4f.apps.googleusercontent.com"
+                        render={renderProps => (
+                            <MDBBtn
+                                style={{width: "100%"}}
+                                color="primary"
+                                onClick={renderProps.onClick}
+                                disabled={renderProps.disabled}
+                            >
+                                <MDBIcon className="me-2" fab icon="google"/>
+                                Login with Google
+                            </MDBBtn>
+                        )}
+                        buttonText="Login"
+                        onSuccess={googleSuccess}
+                        onFailure={googleFailure}
+                        cookiePolicy={'single_host_origin'}
+                    />
                 </MDBCardBody>
                 <MDBCardFooter>
                     <Link to="/register">
