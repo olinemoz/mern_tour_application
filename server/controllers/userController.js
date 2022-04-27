@@ -16,7 +16,7 @@ const signup = async (req, res) => {
             name: `${firstName} ${lastName}`
         });
         await newUser.save();
-        const token = jwt.sign({email: newUser.email, id: newUser._id}, process.env.JWT_SECRET, {expiresIn: "1h"});
+        const token = jwt.sign({email: newUser.email, _id: newUser._id}, process.env.JWT_SECRET, {expiresIn: "1h"});
         return res.status(201).json({result: newUser, token})
 
     } catch (e) {
@@ -39,7 +39,7 @@ const signin = async (req, res) => {
         if (!isPasswordCorrect) {
             return res.status(400).json({message: "Invalid Credentials!"});
         }
-        const token = jwt.sign({email: oldUser.email, id: oldUser._id}, process.env.JWT_SECRET, {expiresIn: "1h"});
+        const token = jwt.sign({email: oldUser.email, _id: oldUser._id}, process.env.JWT_SECRET, {expiresIn: "1h"});
         return res.status(200).json({result: oldUser, token});
 
     } catch (e) {

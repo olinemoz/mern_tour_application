@@ -9,24 +9,27 @@ import Register from "./pages/Register";
 import Header from "./components/Header";
 import {useDispatch} from "react-redux";
 import {loggedIn} from "./redux/features/authSlice";
+import AddEditTour from "./pages/AddEditTour";
 
 const App = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         //Keep LoggedIn User with Local Storage
         const user = JSON.parse(window.localStorage.getItem('profile'));
-        if(user){
+        if (user) {
             dispatch(loggedIn(user));
         }
-    },[dispatch])
+    }, [dispatch])
     return (
         <div className="App">
-            <Header />
+            <Header/>
             <ToastContainer/>
             <Routes>
                 <Route path="/" element={<Home/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/register" element={<Register/>}/>
+                <Route path="/addTour" element={<AddEditTour/>}/>
+                <Route path="/editTour/:id" element={<AddEditTour/>}/>
             </Routes>
         </div>
     );
