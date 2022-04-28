@@ -26,3 +26,6 @@ export const googleSignIn = (result) => {
 export const createTour = (tourData) => {
     return API.post("/tour",tourData)
 }
+export const getTours = () => {
+    return API.get("/tour")
+}
