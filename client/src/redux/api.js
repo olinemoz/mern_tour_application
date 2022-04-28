@@ -29,3 +29,6 @@ export const createTour = (tourData) => {
 export const getTours = () => {
     return API.get("/tour")
 }
+export const getTour = (id) => {
+    return API.get(`/tour/${id}`)
+}

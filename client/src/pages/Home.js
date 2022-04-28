@@ -9,7 +9,7 @@ const Home = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(getTours());
-    }, [])
+    }, [dispatch])
     if (loading) {
         return <h2>Loading...</h2>
     }

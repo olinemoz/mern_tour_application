@@ -2,7 +2,6 @@ const TourModel = require('../models/Tour');
 
 const createTour = async (req, res) => {
     const tour = req.body;
-    console.log("Req userId",req.userId)
     const newTour = new TourModel({
         ...tour,
         creator: req.userId,
@@ -25,7 +24,20 @@ const getAllTours = async (req, res) => {
     }
 }
 
+const getTour = async (req, res) => {
+    const {id} = req.params;
+    try {
+        const tour = await TourModel.findById(id);
+        return res.status(200).json(tour);
+    }catch (error) {
+        return res.status(404).json({message: "Something went wrong!"});
+    }
+}
+
+
+
 module.exports = {
     createTour,
-    getAllTours
+    getAllTours,
+    getTour
 }
