@@ -11,6 +11,8 @@ import {useDispatch} from "react-redux";
 import {loggedIn} from "./redux/features/authSlice";
 import AddEditTour from "./pages/AddEditTour";
 import SingleTour from "./pages/SingleTour";
+import Dashboard from "./pages/Dashboard";
+import PrivateRoute from "./components/PrivateRoute";
 
 const App = () => {
     const dispatch = useDispatch();
@@ -29,9 +31,10 @@ const App = () => {
                 <Route path="/" element={<Home/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/register" element={<Register/>}/>
-                <Route path="/addTour" element={<AddEditTour/>}/>
-                <Route path="/editTour/:id" element={<AddEditTour/>}/>
-                <Route path="/tour/:id" element={<SingleTour/>}/>
+                <Route path="/dashboard" element={<PrivateRoute><Dashboard/></PrivateRoute>}/>
+                <Route path="/addTour" element={<PrivateRoute><AddEditTour/></PrivateRoute>}/>
+                <Route path="/editTour/:id" element={<PrivateRoute><AddEditTour/></PrivateRoute>}/>
+                <Route path="/tour/:id" element={<PrivateRoute><SingleTour/></PrivateRoute>}/>
             </Routes>
         </div>
     );

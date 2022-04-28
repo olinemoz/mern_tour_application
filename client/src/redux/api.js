@@ -32,3 +32,6 @@ export const getTours = () => {
 export const getTour = (id) => {
     return API.get(`/tour/${id}`)
 }
+export const getToursByUser = (userId) => {
+    return API.get(`/tour/userTours/${userId}`)
+}
