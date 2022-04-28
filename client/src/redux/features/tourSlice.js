@@ -51,6 +51,32 @@ export const getToursByUser = createAsyncThunk(
     }
 )
 
+export const deleteTour = createAsyncThunk(
+    "tour/deleteTour",
+    async ({tourId, toast},{rejectWithValue}) => {
+        try {
+            const response = await api.deleteTour(tourId);
+            toast.success("Tour has been deleted successfully!");
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+)
+export const updateTour = createAsyncThunk(
+    "tour/updateTour",
+    async ({tourId,updatedTourData, toast, navigate},{rejectWithValue}) => {
+        try {
+            const response = await api.updateTour(updatedTourData,tourId);
+            toast.success("Tour has been updated successfully!");
+            navigate("/")
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+)
+
 export const tourSlice = createSlice({
     name: 'tour',
     initialState: {
@@ -103,6 +129,36 @@ export const tourSlice = createSlice({
             state.userTours = action.payload;
         },
         [getToursByUser.rejected]: (state, action) => {
+            state.loading = false;
+            state.error = action.payload.message;
+        },
+        [deleteTour.pending]: (state, action) => {
+            state.loading = true;
+        },
+        [deleteTour.fulfilled]: (state, action) => {
+            state.loading = false;
+            const {arg: {tourId}} = action.meta;
+            if(tourId){
+                    state.userTours = state.userTours.filter(item => item._id !== tourId)
+                    state.tours = state.tours.filter(item => item._id !== tourId)
+            }
+        },
+        [deleteTour.rejected]: (state, action) => {
+            state.loading = false;
+            state.error = action.payload.message;
+        },
+        [updateTour.pending]: (state, action) => {
+            state.loading = true;
+        },
+        [updateTour.fulfilled]: (state, action) => {
+            state.loading = false;
+            const {arg: {tourId}} = action.meta;
+            if(tourId){
+                state.userTours = state.userTours.map(item => item._id === tourId ? action.payload : item)
+                state.tours = state.tours.map(item => item._id === tourId ? action.payload : item)
+            }
+        },
+        [updateTour.rejected]: (state, action) => {
             state.loading = false;
             state.error = action.payload.message;
         },

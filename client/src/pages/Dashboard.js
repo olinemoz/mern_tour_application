@@ -12,9 +12,10 @@ import {
     MDBCardTitle
 } from "mdb-react-ui-kit";
 import {useDispatch, useSelector} from "react-redux";
-import {getToursByUser} from "../redux/features/tourSlice";
+import {deleteTour, getToursByUser} from "../redux/features/tourSlice";
 import {Link} from "react-router-dom";
 import Spinner from "../components/Spinner";
+import {toast} from "react-toastify";
 
 const Dashboard = () => {
     const {user} = useSelector(state => state.auth);
@@ -23,7 +24,7 @@ const Dashboard = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (user && userId) {
+        if (userId) {
             dispatch(getToursByUser(userId));
         }
     }, [dispatch, user, userId])
@@ -38,14 +39,21 @@ const Dashboard = () => {
         return <Spinner />
     }
 
+    const handleDeleteTour = id => {
+        const isDelete = window.confirm("Are you sure you want to delete this Blog? ")
+        if(isDelete){
+            dispatch(deleteTour({tourId: id, toast}))
+        }
+    }
+
     return (
         <div style={{margin: "auto", padding: "120px", maxWidth: "900px", alignContent: "center"}}>
             <h4 className="text-center">Dashboard: {user?.result?.name}</h4>
             <hr style={{maxWidth: "570px"}}/>
             {
                 userTours && userTours.map((item) => (
-                    <MDBCardGroup>
-                        <MDBCard key={item._id} style={{maxWidth: "600px"}} className="mt-2">
+                    <MDBCardGroup key={item._id}>
+                        <MDBCard style={{maxWidth: "600px"}} className="mt-2">
                             <MDBRow className="g-0">
                                 <MDBCol md="4">
                                     <MDBCardImage
@@ -68,7 +76,7 @@ const Dashboard = () => {
                                             </small>
                                         </MDBCardText>
                                         <div style={{marginLeft: "5px", float: "right", marginTop: "-60px"}}>
-                                            <MDBBtn className="mt-1" tag="a" color="none">
+                                            <MDBBtn className="mt-1" tag="a" color="none" onClick={() => handleDeleteTour(item._id)}>
                                                 <MDBIcon
                                                     fas
                                                     icon="trash"

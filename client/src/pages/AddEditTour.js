@@ -1,11 +1,11 @@
 import * as React from 'react';
 import {useEffect, useState} from "react";
-import {MDBCard, MDBCardBody, MDBCardFooter, MDBValidation, MDBBtn, MDBSpinner} from "mdb-react-ui-kit";
+import {MDBCard, MDBCardBody, MDBValidation, MDBBtn, MDBInput} from "mdb-react-ui-kit";
 import {toast} from "react-toastify";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import FileBase64 from "react-file-base64";
 import {useDispatch, useSelector} from "react-redux";
-import {createTour} from "../redux/features/tourSlice";
+import {createTour, updateTour} from "../redux/features/tourSlice";
 
 
 const AddEditTour = () => {
@@ -14,23 +14,32 @@ const AddEditTour = () => {
         description: "",
         tags: [],
     });
-    const {error, loading} = useSelector(state => state.tour);
+
+    const {error, userTours} = useSelector(state => state.tour);
     const {user} = useSelector(state => state.auth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const {id} = useParams();
 
     useEffect(() => {
-        if(error){
+        if (id) {
+            const singleTour = userTours.find(tour => tour._id === id);
+            setTourData({...singleTour})
+        }
+    }, [id, userTours])
+
+    useEffect(() => {
+        if (error) {
             toast.error(error)
         }
     }, [error])
     const onInputChange = event => {
-      const name = event.target.name;
-      const value = event.target.value;
-      setTourData({
-          ...tourData,
-          [name]: value
-      })
+        const name = event.target.name;
+        const value = event.target.value;
+        setTourData({
+            ...tourData,
+            [name]: value
+        })
     }
     const handleClear = () => {
         setTourData({
@@ -42,9 +51,13 @@ const AddEditTour = () => {
 
     const handleSubmit = event => {
         event.preventDefault();
-        if(tourData.title && tourData.description){
+        if (tourData.title && tourData.description) {
             const newTourData = {...tourData, name: user?.result?.name};
-            dispatch(createTour({newTourData,navigate,toast}));
+            if (!id) {
+                dispatch(createTour({newTourData, navigate, toast}));
+            } else {
+                dispatch(updateTour({tourId: id, updatedTourData: newTourData, toast, navigate}))
+            }
             handleClear();
         }
     }
@@ -59,14 +72,14 @@ const AddEditTour = () => {
                  marginTop: "120px"
              }}>
             <MDBCard alignment="center">
-                <h5>Add Tour</h5>
+                <h5>{id ? "Update Tour" : "Add Tour"}</h5>
                 <MDBCardBody>
                     <MDBValidation onSubmit={handleSubmit} className="row g-3" noValidate>
                         <div className="col-md-12">
-                            <input
+                            <MDBInput
                                 type="text"
                                 placeholder="Enter title..."
-                                value={tourData.title}
+                                value={tourData.title || ""}
                                 name="title"
                                 onChange={onInputChange}
                                 className="form-control"
@@ -76,18 +89,19 @@ const AddEditTour = () => {
                             />
                         </div>
                         <div className="col-md-12">
-                        <textarea
-                            type="text"
-                            placeholder="Enter description..."
-                            value={tourData.description}
-                            style={{height: "100px"}}
-                            name="description"
-                            onChange={onInputChange}
-                            className="form-control"
-                            required
-                            invalid="true"
-                            validation="Please provide description"
-                        />
+                            <MDBInput
+                                type="text"
+                                placeholder="Enter description..."
+                                value={tourData.description}
+                                name="description"
+                                onChange={onInputChange}
+                                className="form-control"
+                                required
+                                textarea
+                                rows={4}
+                                invalid="true"
+                                validation="Please provide description"
+                            />
                         </div>
                         <div className="d-flex justify-content-start">
                             <FileBase64
@@ -97,7 +111,7 @@ const AddEditTour = () => {
                             />
                         </div>
                         <div className="col-12">
-                            <MDBBtn style={{width: '100%'}} type="submit">Submit</MDBBtn>
+                            <MDBBtn style={{width: '100%'}} type="submit">{id ? "Update" : "Add Blog"}</MDBBtn>
                             <MDBBtn style={{width: '100%'}} className="mt-2" color="danger"
                                     onClick={handleClear}>Clear</MDBBtn>
                         </div>

@@ -13,6 +13,7 @@ import AddEditTour from "./pages/AddEditTour";
 import SingleTour from "./pages/SingleTour";
 import Dashboard from "./pages/Dashboard";
 import PrivateRoute from "./components/PrivateRoute";
+import NotFound from "./pages/NotFound";
 
 const App = () => {
     const dispatch = useDispatch();
@@ -35,6 +36,7 @@ const App = () => {
                 <Route path="/addTour" element={<PrivateRoute><AddEditTour/></PrivateRoute>}/>
                 <Route path="/editTour/:id" element={<PrivateRoute><AddEditTour/></PrivateRoute>}/>
                 <Route path="/tour/:id" element={<PrivateRoute><SingleTour/></PrivateRoute>}/>
+                <Route path="*" element={<NotFound />}/>
             </Routes>
         </div>
     );
